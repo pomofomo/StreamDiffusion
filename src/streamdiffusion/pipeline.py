@@ -257,8 +257,8 @@ class StreamDiffusion:
             self.prompt_embeds = self.encode_prompt(prompt)
         elif isinstance(prompt, torch.Tensor):
             # We pass in the embedding directly
-            if prompt.size != self.prompt_embeds.size:
-                raise Exception(f"Trying to set prompt embed to {prompt.size}, but expected {self.prompt_embeds.size}")
+            if prompt.shape != self.prompt_embeds.shape:
+                raise Exception(f"Trying to set prompt embed to {prompt.shape}, but expected {self.prompt_embeds.shape}")
             self.prompt_embeds = prompt
         else:
             name = type(prompt).__name__

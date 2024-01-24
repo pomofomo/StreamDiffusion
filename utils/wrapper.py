@@ -207,7 +207,7 @@ class StreamDiffusionWrapper:
     def __call__(
         self,
         image: Optional[Union[str, Image.Image, torch.Tensor]] = None,
-        prompt: Optional[str] = None,
+        prompt: Optional[Union[str, torch.Tensor]] = None,
         noise: Optional[Union[torch.Tensor, int, List[int]]] = None,
     ) -> Union[Image.Image, List[Image.Image]]:
         """
@@ -217,7 +217,7 @@ class StreamDiffusionWrapper:
         ----------
         image : Optional[Union[str, Image.Image, torch.Tensor]]
             The image to generate from.
-        prompt : Optional[str]
+        prompt : Optional[Union[str, torch.Tensor]]
             The prompt to generate images from.
         noise: Optional[Union[torch.Tensor, int, List[int]]]
             This is the original noise latent to use for generation.
@@ -238,7 +238,7 @@ class StreamDiffusionWrapper:
 
     def txt2img(
         self,
-        prompt: Optional[str] = None,
+        prompt: Optional[Union[str, torch.Tensor]] = None,
         noise: Optional[Union[torch.Tensor, int, List[int]]] = None,
     ) -> Union[Image.Image, List[Image.Image], torch.Tensor, np.ndarray]:
         """
@@ -246,7 +246,7 @@ class StreamDiffusionWrapper:
 
         Parameters
         ----------
-        prompt : Optional[str]
+        prompt : Optional[Union[str, torch.Tensor]]
             The prompt to generate images from.
         noise: Optional[Union[torch.Tensor, int, List[int]]]
             This is the original noise latent to use for generation.
@@ -283,7 +283,8 @@ class StreamDiffusionWrapper:
 
     def img2img(
         self,
-        image: Union[str, Image.Image, torch.Tensor], prompt: Optional[str] = None,
+        image: Union[str, Image.Image, torch.Tensor],
+        prompt: Optional[Union[str, torch.Tensor]] = None,
         noise: Optional[Union[torch.Tensor, int, List[int]]] = None,
     ) -> Union[Image.Image, List[Image.Image], torch.Tensor, np.ndarray]:
         """
@@ -293,6 +294,8 @@ class StreamDiffusionWrapper:
         ----------
         image : Union[str, Image.Image, torch.Tensor]
             The image to generate from.
+        prompt : Optional[Union[str, torch.Tensor]]
+            The prompt to generate images from.
         noise: Optional[Union[torch.Tensor, int, List[int]]]
             This is the original noise latent to use for generation - this will be mixed in with the source image rather than random noise
             If a Tensor, it must be the proper size.
