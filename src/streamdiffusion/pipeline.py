@@ -252,14 +252,28 @@ class StreamDiffusion:
         )
 
     @torch.no_grad()
-    def update_prompt(self, prompt: str) -> None:
+    def update_prompt(self, prompt: Union[str, torch.Tensor]) -> None:
+        if isinstance(prompt, str):
+            self.prompt_embeds = self.encode_prompt(prompt)
+        elif isinstance(prompt, torch.Tensor):
+            # We pass in the embedding directly
+            if prompt.size != self.prompt_embeds.size:
+                raise Exception(f"Trying to set prompt embed to {prompt.size}, but expected {self.prompt_embeds.size}")
+            self.prompt_embeds = prompt
+        else:
+            name = type(prompt).__name__
+            raise Exception(f"Unexpected type setting prompt: {name}")
+
+    @torch.no_grad()
+    def encode_prompt(self, prompt: str, negative_prompt: Optional[str] = "", do_classifier_free_guidance: bool = False) -> torch.Tensor:
         encoder_output = self.pipe.encode_prompt(
             prompt=prompt,
             device=self.device,
             num_images_per_prompt=1,
-            do_classifier_free_guidance=False,
+            negative_prompt=negative_prompt,
+            do_classifier_free_guidance=do_classifier_free_guidance,
         )
-        self.prompt_embeds = encoder_output[0].repeat(self.batch_size, 1, 1)
+        return encoder_output[0].repeat(self.batch_size, 1, 1)
 
     def add_noise(
         self,
